@@ -1,7 +1,7 @@
 import { fetchPhotos } from "@/utils/fetch-photos";
-import { NextApiRequest, NextApiResponse } from "next";
+import { NextRequest } from "next/server";
 
-export async function GET(req: NextApiRequest) {
+export async function GET(req: NextRequest) {
   if (!req.url) {
     throw new Error("Did not find url");
   }
