@@ -1,11 +1,18 @@
+import { ImageCard } from "@/components/image-card";
+import { LoadMore } from "@/components/load-more";
+import { fetchPhotos } from "@/utils/fetch-photos";
+import { Photo, groupPhotos } from "@/utils/group-photos";
 import Image from "next/image";
 
-export default function Home() {
+export default async function Home() {
+  const limit = 9;
+  const offset = 0;
+  const rows = await fetchPhotos(limit, offset);
+  const photoGroups = groupPhotos(rows as Photo[]);
+
   return (
     <>
-      <header
-        style={{ borderBottom: "solid 1px rgb(219, 219, 219)" }}
-      >
+      <header style={{ borderBottom: "solid 1px rgb(219, 219, 219)" }}>
         <div
           className="max-w-screen-lg flex items-center justify-between ml-auto mr-auto"
           style={{ height: 60 }}
@@ -60,12 +67,15 @@ export default function Home() {
               Top posts
             </h2>
             <div>
-              <div className="flex">
-                {new Array(3).fill(0).map((item, index) => (
-                  <ImageCard key={index} index={index} />
-                ))}
-              </div>
+              {photoGroups.map((group) => (
+                <div className="flex mb-1" key={group[0].id}>
+                  {group.map((item, index) => (
+                    <ImageCard key={item.id} index={index} {...item} />
+                  ))}
+                </div>
+              ))}
             </div>
+            <LoadMore />
           </article>
         </div>
       </main>
@@ -73,40 +83,3 @@ export default function Home() {
   );
 }
 
-const ImageCard = ({ index }: { index: number }) => {
-  return (
-    <div className="flex-1 mr-1">
-      <a
-        href="#"
-        style={{
-          display: "block",
-          position: "relative",
-          width: "100%",
-          height: "100%",
-        }}
-      >
-        <Image
-          src="https://picsum.photos/640/640"
-          width={640}
-          height={640}
-          alt="xx"
-        />
-        {/* <div
-          className="flex items-center justify-center color-white"
-          style={{
-            position: "absolute",
-            width: "100%",
-            height: "100%",
-            background: "rgba(255,255,255,0.3)",
-            top: 0,
-            left: 0,
-            zIndex: 10,
-          }}
-        >
-          <div>66</div>
-          <div className="ml-4">8</div>
-        </div> */}
-      </a>
-    </div>
-  );
-};
